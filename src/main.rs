@@ -19,6 +19,7 @@ async fn main() -> std::io::Result<()> {
         let logger = Logger::default();
         App::new()
             .route("/", web::get().to(status))
+            .route("/api", web::get().to(api::hello_api))
             .wrap(logger)
     }).bind(format!("0.0.0.0:{port}"))?.run().await
 }
