@@ -14,10 +14,11 @@ async fn main() -> std::io::Result<()> {
 
     info!("Starting...");
 
+    let port = std::env::var("PORT").unwrap_or_else(|_| "8080".to_string());
     HttpServer::new(move || {
         let logger = Logger::default();
         App::new()
             .route("/", web::get().to(status))
             .wrap(logger)
-    }).bind("127.0.0.1:8080")?.run().await
+    }).bind(format!("0.0.0.0:{port}"))?.run().await
 }
