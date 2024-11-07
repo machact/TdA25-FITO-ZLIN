@@ -11,4 +11,5 @@ COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/TdA25-FITO-ZLI
 COPY --from=builder /app/static /static
 ENTRYPOINT ["/TdA25-FITO-ZLIN"]
 ENV PORT="80"
+ENV RUST_LOG="error"
 EXPOSE 80
