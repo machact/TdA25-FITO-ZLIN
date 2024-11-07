@@ -20,9 +20,8 @@ async fn main() -> std::io::Result<()> {
         let logger = Logger::default();
         App::new()
             .route("/api", web::get().to(api::hello_api))
-            .default_service(web::route().to(not_found))
             .service(Files::new("/", "static/root/").index_file("index.html"))
-            //.service(Files::new("/static", "static"))
+            .default_service(web::route().to(not_found))
             .wrap(logger)
     }).bind(format!("0.0.0.0:{port}"))?.run().await
 }
