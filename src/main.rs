@@ -61,8 +61,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .app_data(web::Data::new(pool.clone()))
             .wrap(logger)
             .default_service(web::route().to(not_found))
-            .route("/api/v1/games", web::get().to(api::games_get))
-            .route("/api/v1/games", web::post().to(api::games_post))
+            .route("/api/v1/games", web::get().to(api::games::get))
+            .route("/api/v1/games", web::post().to(api::games::post))
             .route("/api", web::get().to(api::hello_api))
             .service(
                 Files::new("/game/", "static/game/")
