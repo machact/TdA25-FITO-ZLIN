@@ -12,7 +12,7 @@ async fn not_found() -> impl Responder {
 }
 
 async fn setup_db(pool: &SqlitePool) -> Result<(), sqlx::Error> {
-    sqlx::query(
+    sqlx::raw_sql(
         r#"
             CREATE TABLE IF NOT EXISTS games (
                 uuid TEXT PRIMARY KEY,

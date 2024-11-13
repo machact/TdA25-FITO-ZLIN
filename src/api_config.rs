@@ -19,6 +19,7 @@ pub fn api_config(cfg: &mut web::ServiceConfig) {
                     )
                     .service(
                         web::resource("/{uuid}")
+                            .route(web::get().to(api::games_uuid::get))
                             .route(web::delete().to(api::games_uuid::delete))
                             .route(web::put().to(api::games_uuid::put))
                     )

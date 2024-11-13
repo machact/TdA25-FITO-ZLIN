@@ -84,6 +84,9 @@ pub enum GameError {
     #[error("Json convertion error (400): {0}")]
     JsonConvertionError(#[from] serde_json::Error),
 
+    #[error("Not found (404): {0}")]
+    NotFound(String),
+
     #[error("Invalid board format (422): {0}")]
     InvalidBoard(String)
 }
@@ -108,6 +111,15 @@ impl actix_web::ResponseError for GameError {
                         "error": "Json convertion error",
                         "details": err.to_string()
                     }))
+            }
+            GameError::NotFound(err) => {
+                warn!("{}", self);
+                HttpResponse::NotFound()
+                    .content_type("application/json")
+                        .json(json!({
+                            "error": "Not found",
+                            "details": err.to_string()
+                        }))
             }
             GameError::InvalidBoard(err) => {
                 warn!("{}", self);
