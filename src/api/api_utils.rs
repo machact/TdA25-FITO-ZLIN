@@ -131,3 +131,31 @@ pub struct CreateGameRequest {
     pub difficulty: String,
     pub board: Vec<Vec<String>>,
 }
+
+pub async fn is_board_valid(board: &Vec<Vec<String>>) -> Result<(), GameError> {
+    if board.len() != 15 {
+        return Err(GameError::InvalidBoard("Board must be 15x15".to_string()));
+    }
+    let mut xs = 0;
+    let mut os = 0;
+    for row in board {
+        if row.len() != 15 {
+            return Err(GameError::InvalidBoard("Board must be 15x15".to_string()));
+        }
+        for i in row {
+            match &**i {
+                "" => (),
+                "X" => xs += 1,
+                "O" => os += 1,
+                _ => {
+                    return Err(GameError::InvalidBoard(r#"Board must only contain "", "X" or "O\"#.to_string()));
+                }
+            }
+        }
+    }
+    if os > xs || xs > os + 1 {
+        return Err(GameError::InvalidBoard("Invalid board".to_string()));
+    }
+
+    Ok(())
+}

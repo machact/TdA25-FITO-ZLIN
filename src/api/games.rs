@@ -3,11 +3,11 @@ use sqlx::sqlite::SqlitePool;
 use uuid::Uuid;
 use chrono::Utc;
 use serde_json::json;
-use super::api_utils::{CreateGameRequest, Game, GameDatabase, GameError};
+use super::api_utils::{CreateGameRequest, Game, GameDatabase, GameError, is_board_valid};
 
 
 
-pub async fn post(pool: web::Data<SqlitePool>, game_data: web::Json<CreateGameRequest >) -> Result<HttpResponse, GameError> {
+pub async fn post(pool: web::Data<SqlitePool>, game_data: web::Json<CreateGameRequest>) -> Result<HttpResponse, GameError> {
     let uuid = Uuid::new_v4().to_string();
     let current_time = Utc::now().to_rfc3339();
 
@@ -76,30 +76,3 @@ pub async fn get(pool: web::Data<SqlitePool>) -> Result<HttpResponse, GameError>
     )  
 }
 
-pub async fn is_board_valid(board: &Vec<Vec<String>>) -> Result<(), GameError> {
-    if board.len() != 15 {
-        return Err(GameError::InvalidBoard("Board must be 15x15".to_string()));
-    }
-    let mut xs = 0;
-    let mut os = 0;
-    for row in board {
-        if row.len() != 15 {
-            return Err(GameError::InvalidBoard("Board must be 15x15".to_string()));
-        }
-        for i in row {
-            match &**i {
-                "" => (),
-                "X" => xs += 1,
-                "O" => os += 1,
-                _ => {
-                    return Err(GameError::InvalidBoard(r#"Board must only contain "", "X" or "O\"#.to_string()));
-                }
-            }
-        }
-    }
-    if os > xs || xs > os + 1 {
-        return Err(GameError::InvalidBoard("Invalid board".to_string()));
-    }
-
-    Ok(())
-}
