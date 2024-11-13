@@ -4,8 +4,8 @@ use sqlx::sqlite::{SqlitePool, SqliteConnectOptions};
 use log::{info, error};
 use std::env;
 
-mod api;
-
+pub mod api;
+pub mod api_config;
 
 async fn not_found() -> impl Responder {
     NamedFile::open("static/404.html")
@@ -61,9 +61,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .app_data(web::Data::new(pool.clone()))
             .wrap(logger)
             .default_service(web::route().to(not_found))
-            .route("/api/v1/games", web::get().to(api::games::get))
-            .route("/api/v1/games", web::post().to(api::games::post))
-            .route("/api", web::get().to(api::hello_api))
+            .configure(api_config::api_config)
             .service(
                 Files::new("/game/", "static/game/")
                     .index_file("game.html")
