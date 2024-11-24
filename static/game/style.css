@@ -5,3 +5,33 @@
 body{
     font-family: Dosis-medium;
 }
+td{
+    width: 20px;
+    height: 20px;
+}
+#horni-lista-game{
+    background-color: #0070BB;
+    color: white;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 20px;
+    /*padding: 10px;*/
+    /*padding-left: 15px;*/
+    border-radius: 4px;
+    vertical-align: bottom;
+    margin-bottom: 25px;
+    text-align: center;
+}
+#zapati{
+    background-color: #0070BB;
+    color: white;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 20px;
+    /*padding: 10px;*/
+    /*padding-left: 15px;*/
+    border-radius: 4px;
+    vertical-align: bottom;
+    margin-top: 25px;
+    text-align: center;
+}
