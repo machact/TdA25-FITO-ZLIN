@@ -3,11 +3,11 @@ use sqlx::sqlite::SqlitePool;
 use uuid::Uuid;
 use chrono::Utc;
 use serde_json::json;
-use super::api_utils::{CreateGameRequest, Game, GameDatabase, GameError, is_board_valid};
+use super::api_utils::{CreateUpdateGame, Game, GameDatabase, GameError, is_board_valid};
 
 
 
-pub async fn post(pool: web::Data<SqlitePool>, game_data: web::Json<CreateGameRequest>) -> Result<HttpResponse, GameError> {
+pub async fn post(pool: web::Data<SqlitePool>, game_data: web::Json<CreateUpdateGame>) -> Result<HttpResponse, GameError> {
     let uuid = Uuid::new_v4().to_string();
     let current_time = Utc::now().to_rfc3339();
 

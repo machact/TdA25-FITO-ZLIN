@@ -138,7 +138,7 @@ impl actix_web::ResponseError for GameError {
 
 
 #[derive(Deserialize, Serialize)]
-pub struct CreateGameRequest {
+pub struct CreateUpdateGame {
     pub name: String,
     pub difficulty: String,
     pub board: Vec<Vec<String>>,

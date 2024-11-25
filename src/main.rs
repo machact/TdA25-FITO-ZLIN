@@ -72,6 +72,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .index_file("game.html")
                     .redirect_to_slash_directory()
             )
+            .service(
+                Files::new("/game/{uuid}", "static/game/")
+                    .index_file("game.html")
+                    .redirect_to_slash_directory()
+            )
             .service(Files::new("/", "static/root/").index_file("index.html"))
             .default_service(web::route().to(not_found))
     }).bind(format!("0.0.0.0:{port}"))?.run().await?;
