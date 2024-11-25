@@ -55,7 +55,7 @@ pub async fn post(pool: web::Data<SqlitePool>, game_data: web::Json<CreateGameRe
 
 
 pub async fn get(pool: web::Data<SqlitePool>) -> Result<HttpResponse, GameError> {
-    let games_database = sqlx::query_as::<_, GameDatabase>(
+    let games_database: Vec<GameDatabase> = sqlx::query_as(
         r#"
         SELECT *
         FROM games

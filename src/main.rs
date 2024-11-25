@@ -1,4 +1,4 @@
-use actix_web::{middleware, web, App, HttpServer, Responder};
+use actix_web::{http::StatusCode, middleware, web, App, HttpRequest, HttpResponse, HttpServer, Responder};
 use actix_files::{Files, NamedFile};
 use sqlx::sqlite::{SqlitePool, SqliteConnectOptions};
 use log::{info, error};
@@ -7,12 +7,19 @@ use std::env;
 pub mod api;
 pub mod api_config;
 
-async fn not_found() -> impl Responder {
-    NamedFile::open("static/404.html")
+async fn not_found(req: HttpRequest) -> impl Responder {
+    match NamedFile::open("static/404.html") {
+        Ok(file) => {
+            let mut response = file.into_response(&req);
+            *response.status_mut() = StatusCode::NOT_FOUND;
+            response
+        },
+        Err(_) => HttpResponse::NotFound().body("404 not found"),
+    }
 }
 
 async fn setup_db(pool: &SqlitePool) -> Result<(), sqlx::Error> {
-    sqlx::raw_sql(
+    sqlx::query(
         r#"
             CREATE TABLE IF NOT EXISTS games (
                 uuid TEXT PRIMARY KEY,
@@ -42,7 +49,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
 
     let database_path = "sqlite:app.db";
-    info!("DATABASE_URL: {}", database_path);
 
     let options = SqliteConnectOptions::new()
         .filename(database_path)
@@ -60,7 +66,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         App::new()
             .app_data(web::Data::new(pool.clone()))
             .wrap(logger)
-            .default_service(web::route().to(not_found))
             .configure(api_config::api_config)
             .service(
                 Files::new("/game/", "static/game/")
@@ -68,6 +73,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .redirect_to_slash_directory()
             )
             .service(Files::new("/", "static/root/").index_file("index.html"))
+            .default_service(web::route().to(not_found))
     }).bind(format!("0.0.0.0:{port}"))?.run().await?;
 
     Ok(())
